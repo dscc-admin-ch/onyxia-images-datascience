@@ -20,6 +20,10 @@ COPY settings/Remote.json ${REMOTE_CONFIG_DIR}/settings.json
 # Install VSCode
 RUN /opt/install-vscode.sh && \
     /opt/install-vscode-extensions.sh && \
+    pip install --no-cache-dir --upgrade \
+        "cryptography>=50.0.0" && \
+    # Remove pip's embedded SBOM to avoid false-positive (wrong setuptools)
+    rm -f /opt/python/lib/python3.13/site-packages/pip/_vendor/bom.cdx.json && \
     # Install opencode
     if [ "$INSTALL_OPENCODE" = "true" ] ; then /opt/install-opencode.sh; fi && \
     # Fix user permissions
