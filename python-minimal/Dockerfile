@@ -15,12 +15,14 @@ USER root
 COPY --chmod=0755 scripts/ /opt/
 COPY requirements.txt .
 
+ARG INSTALL_CLIENT_DUCKDB="false"
+
 # Build Python from source
 RUN /opt/install-python.sh && \
     # Install Python packages
     uv pip install --system --no-cache -r requirements.txt && \
     # Install duckdb extensions
-    python /opt/install-duckdb-extensions.py && \
+    if [ "$INSTALL_CLIENT_DUCKDB" = "true" ] ; then python /opt/install-duckdb-extensions.py; fi && \
     # Fix user permissions
     /opt/fix-user-permissions.sh && \
     # Clean

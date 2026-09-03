@@ -3,13 +3,16 @@ FROM $BASE_IMAGE
 
 LABEL maintainer="InseeFrLab <innovation@insee.fr>"
 
+ARG INSTALL_GEOSPATIAL_PYTHON="true"
+
 USER root
 
 COPY --chmod=0755 scripts/ /opt/
 COPY requirements.txt .
 
 # Install Python packages and their required system libraries
-RUN /opt/install-geospatial-python.sh && \
+RUN if [ "$INSTALL_GEOSPATIAL_PYTHON" = "true" ] ; then /opt/install-geospatial-python.sh; fi && \
+    # /opt/install-geospatial-python.sh && \
     uv pip install --system --no-cache -r requirements.txt && \
     # Fix user permissions
     /opt/fix-user-permissions.sh && \
