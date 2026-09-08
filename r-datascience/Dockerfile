@@ -12,9 +12,7 @@ USER root
 
 COPY --chmod=0755 scripts/ /opt/
 
-RUN /rocker_scripts/install_geospatial.sh && \
-    # Install a Java JDK/JRE for R packages that use it as backend
-    /opt/install-java.sh && \
+RUN /opt/install-java.sh && \
     # Install useful R packages for data science
     install2.r --ncpus -1 --error \
         arrow \

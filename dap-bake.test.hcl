@@ -50,6 +50,8 @@ target "onyxia-vscode-python" {
   contexts = {
     "damienaymon/onyxia-python-datascience" = "target:onyxia-python-datascience"
   }
+
+  output     = ["type=docker"]
 }
 
 target "dscc-vscode-python-flat" {
@@ -106,4 +108,34 @@ target "onyxia-vscode-r" {
   contexts = {
     "damienaymon/onyxia-r-datascience" = "target:onyxia-r-datascience"
   }
+
+  output     = ["type=docker"]
+}
+
+target "onyxia-jupyter-python" {
+  context    = "./jupyter"
+  dockerfile = "Dockerfile"
+  tags       = ["damienaymon/onyxia-jupyter-python:latest"]
+  args = {
+    BASE_IMAGE = "damienaymon/onyxia-python-datascience"
+  }
+  contexts = {
+    "damienaymon/onyxia-python-datascience" = "target:onyxia-python-datascience"
+  }
+
+  output     = ["type=docker"]
+}
+
+target "onyxia-jupyter-r" {
+  context    = "./jupyter"
+  dockerfile = "Dockerfile"
+  tags       = ["damienaymon/onyxia-jupyter-pythpon:latest"]
+  args = {
+    BASE_IMAGE = "damienaymon/onyxia-r-datascience"
+  }
+  contexts = {
+    "damienaymon/onyxia-r-datascience" = "target:onyxia-r-datascience"
+  }
+
+  output     = ["type=docker"]
 }
