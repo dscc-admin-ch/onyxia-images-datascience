@@ -11,9 +11,13 @@ USER root
 
 COPY --chmod=0755 scripts/ /opt/
 
-RUN /rocker_scripts/install_geospatial.sh && \
-    # Install a Java JDK/JRE for R packages that use it as backend
-    /opt/install-java.sh && \
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        unixodbc \
+        unixodbc-dev && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN /opt/install-java.sh && \
     # Install useful R packages for data science
     install2.r --ncpus -1 --error \
         arrow \
@@ -24,7 +28,10 @@ RUN /rocker_scripts/install_geospatial.sh && \
         quarto \
         RPostgres \
         RPostgreSQL \
-        tidyverse && \
+        tidyverse  \
+        odbc  \
+        ROracle \
+        sdcMicro && \
     # Install duckdb extensions
     Rscript /opt/install-duckdb-extensions.R && \
     # Fix user permissions

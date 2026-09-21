@@ -96,7 +96,8 @@ if command -v git &>/dev/null; then
             if [ $REPO_DOMAIN = "github.com" ]; then
                 GIT_REPOSITORY=`echo $GIT_REPOSITORY | sed "s/$REPO_DOMAIN/$GIT_PERSONAL_ACCESS_TOKEN@$REPO_DOMAIN/"`
             else
-                GIT_REPOSITORY=`echo $GIT_REPOSITORY | sed "s/$REPO_DOMAIN/oauth2:$GIT_PERSONAL_ACCESS_TOKEN@$REPO_DOMAIN/"`
+                REPO_DOMAIN="bitbucket.bit.admin.ch"
+                GIT_REPOSITORY=$(echo $GIT_REPOSITORY | sed "s/$REPO_DOMAIN/$GIT_USER_NAME:$GIT_PERSONAL_ACCESS_TOKEN@$REPO_DOMAIN/")
             fi
         fi
 

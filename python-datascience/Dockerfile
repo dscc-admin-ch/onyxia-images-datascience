@@ -10,6 +10,12 @@ USER root
 COPY --chmod=0755 scripts/ /opt/
 COPY requirements.txt .
 
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        unixodbc \
+        unixodbc-dev && \
+    rm -rf /var/lib/apt/lists/*
+
 # Install Python packages and their required system libraries
 RUN if [ "$INSTALL_GEOSPATIAL_PYTHON" = "true" ] ; then /opt/install-geospatial-python.sh; fi && \
     # /opt/install-geospatial-python.sh && \

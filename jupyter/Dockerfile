@@ -16,11 +16,13 @@ RUN /opt/install-jupyterlab.sh && \
     fi && \
     # If R is installed, make its kernel available in Jupyter
     if command -v R; then \
-        R -e "install.packages('IRkernel'); IRkernel::installspec()"; \
+        R -e "install.packages('IRkernel'); IRkernel::installspec(user= FALSE)"; \
     fi && \
     # Generate jupyter server config
     jupyter server --generate-config && \
     jupyter lab clean && \
+    # Small fix cve
+    rm -f /opt/python/lib/python3.13/site-packages/pip/_vendor/bom.cdx.json && \
     # Install opencode
     /opt/install-opencode.sh && \
     # Fix user permissions

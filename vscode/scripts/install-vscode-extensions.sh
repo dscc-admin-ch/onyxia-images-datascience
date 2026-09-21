@@ -72,9 +72,19 @@ if command -v R &> /dev/null; then
     done
     R -e "install.packages(c('remotes', 'languageserver', 'rmarkdown', 'httpgd'))"
     R -e "remotes::install_github('ManuelHentschel/vscDebugger')"
-    pip install radian
-    r_path=$(which radian)
-    jq --arg rPath "$r_path" '.["r.rterm.linux"] = $rPath' ${REMOTE_CONFIG_DIR}/settings.json > tmp.json && mv tmp.json ${REMOTE_CONFIG_DIR}/settings.json
+    
+    if command -v uv >/dev/null 2>&1; then
+        uv pip install --system --no-cache radian
+    elif command -v pip >/dev/null 2>&1; then
+        pip install radian
+    else
+        echo "Neither uv nor pip found, skipping radian install." >&2
+    fi
+
+    if command -v radian >/dev/null 2>&1; then
+        r_path=$(which radian)
+        jq --arg rPath "$r_path" '.["r.rterm.linux"] = $rPath' "${REMOTE_CONFIG_DIR}/settings.json" > tmp.json && mv tmp.json "${REMOTE_CONFIG_DIR}/settings.json"
+    fi
 fi
 
 # Julia-specific configuration

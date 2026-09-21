@@ -11,9 +11,9 @@ function apt_install() {
 }
 
 if command -v uv &>/dev/null; then
-    uv pip install --system --no-cache jupyterlab jupyter-ai langchain-openai
+    uv pip install --system --no-cache jupyterlab
 else
-    pip install --no-cache-dir jupyterlab jupyter-ai langchain-openai
+    pip install --no-cache-dir jupyterlab
 fi
 
 mkdir -p  ${HOME}/.local/share/jupyter/jupyter_ai

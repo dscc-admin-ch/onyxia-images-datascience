@@ -16,9 +16,10 @@ COPY --chmod=0755 scripts/ /opt/
 COPY requirements.txt .
 
 RUN /opt/install-python.sh && \
-    /opt/install-julia.sh && \
+    # /opt/install-julia.sh && \
     # Install common Python packages
     uv pip install --system --no-cache -r requirements.txt && \
+    # python -m pip uninstall -y pip setuptools wheel && \
     # Fix user permissions
     /opt/fix-user-permissions.sh && \
     # Clean

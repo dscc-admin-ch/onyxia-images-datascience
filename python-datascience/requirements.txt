@@ -12,3 +12,4 @@ scipy
 seaborn
 statsmodels
 xgboost
+pyodbc

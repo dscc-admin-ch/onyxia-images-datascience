@@ -25,6 +25,8 @@ target "onyxia-python-minimal" {
   contexts = {
     "damienaymon/onyxia-base" = "target:onyxia-base"
   }
+
+  output     = ["type=docker"]
 }
 
 target "onyxia-python-datascience" {
@@ -50,6 +52,8 @@ target "onyxia-vscode-python" {
   contexts = {
     "damienaymon/onyxia-python-datascience" = "target:onyxia-python-datascience"
   }
+
+  output     = ["type=docker"]
 }
 
 target "dscc-vscode-python-flat" {
@@ -101,9 +105,68 @@ target "onyxia-vscode-r" {
   dockerfile = "Dockerfile"
   tags       = ["damienaymon/onyxia-vscode-r:latest"]
   args = {
+    BASE_IMAGE = "damienaymon/onyxia-r-python"
+  }
+  contexts = {
+    "damienaymon/onyxia-r-python" = "target:onyxia-r-python"
+  }
+
+  output     = ["type=docker"]
+}
+
+target "onyxia-jupyter-python" {
+  context    = "./jupyter"
+  dockerfile = "Dockerfile"
+  tags       = ["damienaymon/onyxia-jupyter-python:latest"]
+  args = {
+    BASE_IMAGE = "damienaymon/onyxia-python-datascience"
+  }
+  contexts = {
+    "damienaymon/onyxia-python-datascience" = "target:onyxia-python-datascience"
+  }
+
+  output     = ["type=docker"]
+}
+
+target "onyxia-jupyter-r" {
+  context    = "./jupyter"
+  dockerfile = "Dockerfile"
+  tags       = ["damienaymon/onyxia-jupyter-pythpon:latest"]
+  args = {
     BASE_IMAGE = "damienaymon/onyxia-r-datascience"
   }
   contexts = {
     "damienaymon/onyxia-r-datascience" = "target:onyxia-r-datascience"
   }
+
+  output     = ["type=docker"]
+}
+
+# R-Python
+
+target "onyxia-r-python" {
+  context    = "./r-python-julia"
+  dockerfile = "Dockerfile"
+  tags       = ["damienaymon/onyxia-r-python:latest"]
+  args = {
+    BASE_IMAGE = "damienaymon/onyxia-r-datascience"
+    R_VERSION = "4.5.3"
+  }
+  contexts = {
+    "damienaymon/onyxia-r-datascience" = "target:onyxia-r-datascience"
+  }
+}
+
+target "onyxia-jupyter-r-python" {
+  context    = "./jupyter"
+  dockerfile = "Dockerfile"
+  tags       = ["damienaymon/onyxia-jupyter-r-python:latest"]
+  args = {
+    BASE_IMAGE = "damienaymon/onyxia-r-python"
+  }
+  contexts = {
+    "damienaymon/onyxia-r-python" = "target:onyxia-r-python"
+  }
+
+  output     = ["type=docker"]
 }
