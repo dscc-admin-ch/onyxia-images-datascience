@@ -1,21 +1,21 @@
-name: Make free space
-description: Remove unwanted software to increase available space on GHA build VM.
-# https://github.com/actions/virtual-environments/issues/2840
+# name: Make free space
+# description: Remove unwanted software to increase available space on GHA build VM.
+# # https://github.com/actions/virtual-environments/issues/2840
 
-runs:
-  using: composite
-  steps:
-    - name: Make free space
-      shell: bash
-      run: |
-        sudo rm -rf /usr/share/dotnet
-        sudo rm -rf /usr/local/lib/android
-        sudo rm -rf /opt/ghc
-        sudo rm -rf "/usr/local/share/boost"
-        sudo rm -rf "$AGENT_TOOLSDIRECTORY"
-        sudo rm -rf /opt/hostedtoolcache/CodeQL
-    - name: Show available space
-      shell: bash
-      run: |
-        echo "Free space:"
-        df -h
+# runs:
+#   using: composite
+#   steps:
+#     - name: Make free space
+#       shell: bash
+#       run: |
+#         sudo rm -rf /usr/share/dotnet
+#         sudo rm -rf /usr/local/lib/android
+#         sudo rm -rf /opt/ghc
+#         sudo rm -rf "/usr/local/share/boost"
+#         sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+#         sudo rm -rf /opt/hostedtoolcache/CodeQL
+#     - name: Show available space
+#       shell: bash
+#       run: |
+#         echo "Free space:"
+#         df -h

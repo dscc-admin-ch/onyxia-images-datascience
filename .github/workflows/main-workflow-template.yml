@@ -1,135 +1,135 @@
-name: Template for each build job
+# name: Template for each build job
 
-on:
-  workflow_call:
-    inputs:
-      image:
-        description: Final release name
-        required: true
-        type: string
-      context:
-        description: Build context
-        required: true
-        type: string
-      base_image:
-        description: Name of the base image
-        required: true
-        type: string
-      base_image_gpu:
-        description: Name of the GPU base image
-        required: false
-        type: string
-      build_gpu:
-        description: If true, build GPU versions of the images
-        required: false
-        type: boolean
-        default: true
-      python_version_1:
-        description: context of docker image
-        required: false
-        type: string
-      python_version_2:
-        description: context of docker image
-        required: false
-        type: string
-      r_version_1:
-        description: context of docker image
-        required: false
-        type: string
-      r_version_2:
-        description: context of docker image
-        required: false
-        type: string
-      spark_version:
-        description: context of docker image
-        required: false
-        type: string
+# on:
+#   workflow_call:
+#     inputs:
+#       image:
+#         description: Final release name
+#         required: true
+#         type: string
+#       context:
+#         description: Build context
+#         required: true
+#         type: string
+#       base_image:
+#         description: Name of the base image
+#         required: true
+#         type: string
+#       base_image_gpu:
+#         description: Name of the GPU base image
+#         required: false
+#         type: string
+#       build_gpu:
+#         description: If true, build GPU versions of the images
+#         required: false
+#         type: boolean
+#         default: true
+#       python_version_1:
+#         description: context of docker image
+#         required: false
+#         type: string
+#       python_version_2:
+#         description: context of docker image
+#         required: false
+#         type: string
+#       r_version_1:
+#         description: context of docker image
+#         required: false
+#         type: string
+#       r_version_2:
+#         description: context of docker image
+#         required: false
+#         type: string
+#       spark_version:
+#         description: context of docker image
+#         required: false
+#         type: string
 
-jobs:
-  matrix_prep:
-    runs-on: ubuntu-latest
-    outputs:
-      matrix: ${{ steps.set-matrix.outputs.matrix }}
-    steps:
-    - name: Check out code 
-      uses: actions/checkout@v7
+# jobs:
+#   matrix_prep:
+#     runs-on: ubuntu-latest
+#     outputs:
+#       matrix: ${{ steps.set-matrix.outputs.matrix }}
+#     steps:
+#     - name: Check out code 
+#       uses: actions/checkout@v7
 
-    - name: Set up Python
-      uses: actions/setup-python@v7 
-      with:
-        python-version: '3.13'
+#     - name: Set up Python
+#       uses: actions/setup-python@v7 
+#       with:
+#         python-version: '3.13'
 
-    - id: set-matrix
-      run: |
-        python3 utils/generate-matrix.py --input_image ${{ inputs.base_image }} --output_image ${{ inputs.image }} \
-            --python_version_1 ${{ inputs.python_version_1 }} --python_version_2 ${{ inputs.python_version_2 }} \
-            --r_version_1 ${{ inputs.r_version_1 }} --r_version_2 ${{ inputs.r_version_2 }} --spark_version ${{ inputs.spark_version }} \
-            --build_gpu ${{ inputs.build_gpu }} --base_image_gpu ${{ inputs.base_image_gpu }} \
-            --dh_orga ${{ github.repository_owner }} --images_prefix onyxia
-  docker:
-    runs-on: ubuntu-latest
-    needs: matrix_prep
-    strategy:
-      fail-fast: false
-      matrix:
-        ${{fromJson(needs.matrix_prep.outputs.matrix)}}
-    steps:
-      - name: Check out code 
-        uses: actions/checkout@v7
+#     - id: set-matrix
+#       run: |
+#         python3 utils/generate-matrix.py --input_image ${{ inputs.base_image }} --output_image ${{ inputs.image }} \
+#             --python_version_1 ${{ inputs.python_version_1 }} --python_version_2 ${{ inputs.python_version_2 }} \
+#             --r_version_1 ${{ inputs.r_version_1 }} --r_version_2 ${{ inputs.r_version_2 }} --spark_version ${{ inputs.spark_version }} \
+#             --build_gpu ${{ inputs.build_gpu }} --base_image_gpu ${{ inputs.base_image_gpu }} \
+#             --dh_orga ${{ github.repository_owner }} --images_prefix onyxia
+#   docker:
+#     runs-on: ubuntu-latest
+#     needs: matrix_prep
+#     strategy:
+#       fail-fast: false
+#       matrix:
+#         ${{fromJson(needs.matrix_prep.outputs.matrix)}}
+#     steps:
+#       - name: Check out code 
+#         uses: actions/checkout@v7
 
-      - name: Make free space
-        uses: ./.github/actions/make-free-space
+#       - name: Make free space
+#         uses: ./.github/actions/make-free-space
 
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v4
+#       - name: Set up QEMU
+#         uses: docker/setup-qemu-action@v4
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v4
+#       - name: Set up Docker Buildx
+#         uses: docker/setup-buildx-action@v4
 
-      - name: Build and load to the Docker client
-        if: ${{ !contains(matrix.output_image_tags, 'gpu') }}
-        uses: docker/build-push-action@v7
-        with:
-          load: true
-          push: false
-          context: ${{ inputs.context }}
-          tags: ${{ matrix.output_image_tags }}
-          build-args: |
-            BASE_IMAGE=${{ matrix.base_image_tag }}
-            PYTHON_VERSION=${{ matrix.python_version }}
-            R_VERSION=${{ matrix.r_version }}
-            SPARK_VERSION=${{ matrix.spark_version }}
-          secrets: |
-            "github_token=${{ secrets.GITHUB_TOKEN }}"
+#       - name: Build and load to the Docker client
+#         if: ${{ !contains(matrix.output_image_tags, 'gpu') }}
+#         uses: docker/build-push-action@v7
+#         with:
+#           load: true
+#           push: false
+#           context: ${{ inputs.context }}
+#           tags: ${{ matrix.output_image_tags }}
+#           build-args: |
+#             BASE_IMAGE=${{ matrix.base_image_tag }}
+#             PYTHON_VERSION=${{ matrix.python_version }}
+#             R_VERSION=${{ matrix.r_version }}
+#             SPARK_VERSION=${{ matrix.spark_version }}
+#           secrets: |
+#             "github_token=${{ secrets.GITHUB_TOKEN }}"
 
-      - name: Test image using Google's Container Structure Test
-        if: ${{ !contains(matrix.output_image_tags, 'gpu') }}
-        uses: ./.github/actions/container-structure-test
-        with:
-          image: ${{ matrix.output_image_main_tag }}
-          config: ./${{ inputs.context }}/tests.yaml
+#       - name: Test image using Google's Container Structure Test
+#         if: ${{ !contains(matrix.output_image_tags, 'gpu') }}
+#         uses: ./.github/actions/container-structure-test
+#         with:
+#           image: ${{ matrix.output_image_main_tag }}
+#           config: ./${{ inputs.context }}/tests.yaml
 
-      - name: Login to Docker Hub
-        if: ${{ github.ref == 'refs/heads/main' }}
-        uses: docker/login-action@v4
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+#       - name: Login to Docker Hub
+#         if: ${{ github.ref == 'refs/heads/main' }}
+#         uses: docker/login-action@v4
+#         with:
+#           username: ${{ secrets.DOCKERHUB_USERNAME }}
+#           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Restore common Docker images from cache
-        uses: ./.github/actions/cache-common-images
+#       - name: Restore common Docker images from cache
+#         uses: ./.github/actions/cache-common-images
       
-      - name: Push to DockerHub
-        if: ${{ github.ref == 'refs/heads/main' }}
-        uses: docker/build-push-action@v7
-        with:
-          push: true
-          context: ${{ inputs.context }}
-          tags: ${{ matrix.output_image_tags }}
-          build-args: |
-            BASE_IMAGE=${{ matrix.base_image_tag }}
-            PYTHON_VERSION=${{ matrix.python_version }}
-            R_VERSION=${{ matrix.r_version }}
-            SPARK_VERSION=${{ matrix.spark_version }}
-          secrets: |
-            "github_token=${{ secrets.GITHUB_TOKEN }}"
+#       - name: Push to DockerHub
+#         if: ${{ github.ref == 'refs/heads/main' }}
+#         uses: docker/build-push-action@v7
+#         with:
+#           push: true
+#           context: ${{ inputs.context }}
+#           tags: ${{ matrix.output_image_tags }}
+#           build-args: |
+#             BASE_IMAGE=${{ matrix.base_image_tag }}
+#             PYTHON_VERSION=${{ matrix.python_version }}
+#             R_VERSION=${{ matrix.r_version }}
+#             SPARK_VERSION=${{ matrix.spark_version }}
+#           secrets: |
+#             "github_token=${{ secrets.GITHUB_TOKEN }}"
