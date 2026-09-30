@@ -5,6 +5,8 @@ LABEL maintainer="InseeFrLab <innovation@insee.fr>"
 
 COPY --chmod=0755 scripts/ /opt/
 RUN /opt/install-marimo.sh && \
+    # Remove pip's embedded SBOM to avoid false-positive (wrong setuptools)
+    rm -f /opt/python/lib/python3.13/site-packages/pip/_vendor/bom.cdx.json && \
     # Clean
     /opt/clean.sh
 
