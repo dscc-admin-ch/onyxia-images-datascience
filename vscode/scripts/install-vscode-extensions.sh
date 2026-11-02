@@ -71,6 +71,7 @@ if command -v R &> /dev/null; then
         install_extension $extension
     done
     R -e "install.packages(c('remotes', 'languageserver', 'rmarkdown', 'httpgd'))"
+    R -e "install.packages('sess', repos = c('https://reditorsupport.r-universe.dev', getOption('repos')))"
     R -e "remotes::install_github('ManuelHentschel/vscDebugger')"
     
     if command -v uv >/dev/null 2>&1; then

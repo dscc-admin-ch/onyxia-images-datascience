@@ -150,7 +150,7 @@ target "onyxia-jupyter-python" {
 target "onyxia-jupyter-r" {
   context    = "./jupyter"
   dockerfile = "Dockerfile"
-  tags       = ["lancelotmarti/onyxia-jupyter-pythpon:latest"]
+  tags       = ["lancelotmarti/onyxia-jupyter-python:latest"]
   args = {
     BASE_IMAGE = "lancelotmarti/onyxia-r-datascience"
   }

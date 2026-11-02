@@ -15,6 +15,8 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     unixodbc \
     unixodbc-dev \
+    libwebp-dev \
+    libwebpmux3 \
     libpoppler-cpp-dev \
     poppler-utils && \
     rm -rf /var/lib/apt/lists/*
@@ -34,6 +36,8 @@ RUN /opt/install-java.sh && \
         tidyverse  \
         odbc  \
         ROracle \
+        openxlsx \
+        brms \
         sdcMicro && \
     # Install duckdb extensions
     Rscript /opt/install-duckdb-extensions.R && \
