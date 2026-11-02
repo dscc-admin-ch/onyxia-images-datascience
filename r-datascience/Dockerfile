@@ -13,8 +13,10 @@ COPY --chmod=0755 scripts/ /opt/
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-        unixodbc \
-        unixodbc-dev && \
+    unixodbc \
+    unixodbc-dev \
+    libpoppler-cpp-dev \
+    poppler-utils && \
     rm -rf /var/lib/apt/lists/*
 
 RUN /opt/install-java.sh && \
@@ -25,6 +27,7 @@ RUN /opt/install-java.sh && \
         DBI \
         duckdb \
         paws \
+        pdftools \
         quarto \
         RPostgres \
         RPostgreSQL \
