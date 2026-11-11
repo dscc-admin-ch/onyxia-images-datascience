@@ -18,7 +18,15 @@ RUN apt-get update && \
     libwebp-dev \
     libwebpmux3 \
     libpoppler-cpp-dev \
+    libsqliteodbc \
     poppler-utils && \
+    # Install sqlite + MSQL drivers
+    curl -sSL -o /tmp/packages-microsoft-prod.deb \
+        "https://packages.microsoft.com/config/ubuntu/$(. /etc/os-release && echo $VERSION_ID)/packages-microsoft-prod.deb" && \
+    dpkg -i /tmp/packages-microsoft-prod.deb && \
+    rm /tmp/packages-microsoft-prod.deb && \
+    apt-get update && \
+    ACCEPT_EULA=Y apt-get install -y --no-install-recommends msodbcsql18 && \
     rm -rf /var/lib/apt/lists/*
 
 RUN /opt/install-java.sh && \
@@ -37,6 +45,7 @@ RUN /opt/install-java.sh && \
         odbc  \
         ROracle \
         openxlsx \
+        plumber \
         brms \
         sdcMicro && \
     # Install duckdb extensions
